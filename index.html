@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GigByCity - Procedural Graffiti Scroll</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -21,6 +21,8 @@
             /* Hidden scrollbar for cleaner look, but still scrollable */
             -ms-overflow-style: none;
             scrollbar-width: none;
+            /* Remove tap highlight on mobile */
+            -webkit-tap-highlight-color: transparent;
         }
 
         body::-webkit-scrollbar {
@@ -70,12 +72,12 @@
     class="bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 relative min-h-screen transition-colors duration-500">
 
     <!-- Fixed Background Container -->
-    <div class="fixed inset-0 z-0 transition-opacity duration-500">
+    <div class="fixed inset-0 z-0 transition-opacity duration-500 pointer-events-none">
         <canvas id="graffiti-canvas" class="w-full h-full"></canvas>
     </div>
 
     <!-- UI Overlay (Mobile Layout Centered) -->
-    <div class="relative z-10 w-full max-w-md mx-auto pt-4 pb-28 px-4 flex flex-col gap-6" id="app-content">
+    <div class="relative z-10 w-full max-w-md mx-auto pt-4 pb-28 px-4 flex flex-col gap-5 sm:gap-6" id="app-content">
 
         <!-- Top Navigation -->
         <header class="flex justify-between items-center glass-card px-4 py-3 rounded-2xl">
@@ -83,9 +85,9 @@
                 <div class="w-3 h-3 bg-red-600 rotate-45"></div>
                 <h1 class="font-bold text-lg tracking-tight dark:text-white">GigByCity</h1>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 sm:gap-3">
                 <button id="theme-toggle"
-                    class="p-2 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors">
+                    class="p-2 sm:p-2.5 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 transition-colors active:scale-95">
                     <svg id="theme-icon-dark" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -99,7 +101,7 @@
                         </path>
                     </svg>
                 </button>
-                <span class="text-xs font-bold tracking-wider dark:text-gray-300">AARON</span>
+                <span class="text-[10px] sm:text-xs font-bold tracking-wider dark:text-gray-300 uppercase">Aaron</span>
                 <div
                     class="w-8 h-8 rounded-full overflow-hidden bg-gray-200 border border-gray-300 dark:border-gray-700">
                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aaron&backgroundColor=b6e3f4"
@@ -109,14 +111,18 @@
         </header>
 
         <!-- Hero Section -->
-        <div class="w-full h-64 rounded-3xl overflow-hidden relative shadow-2xl group cursor-pointer">
+        <!-- Added touch-action-manipulation for better mobile tapping -->
+        <div
+            class="w-full h-64 rounded-3xl overflow-hidden relative shadow-2xl group cursor-pointer active:scale-[0.98] transition-transform">
+            <!-- md:group-hover keeps hover effect only on desktop -->
             <img src="https://images.unsplash.com/photo-1598387181032-a3103a2db5b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
                 alt="The Beatles"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                class="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-700">
             <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10"></div>
-            <div class="absolute inset-0 p-6 flex flex-col justify-end">
+            <div class="absolute inset-0 p-5 sm:p-6 flex flex-col justify-end">
                 <span class="text-white/70 text-xs font-bold tracking-widest mb-1">UP NEXT</span>
-                <h2 class="text-white text-4xl font-extrabold tracking-tight mb-2">THE<br>BEATLES</h2>
+                <!-- Scaled text down slightly for narrow mobile -->
+                <h2 class="text-white text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">THE<br>BEATLES</h2>
                 <div class="flex items-center gap-2">
                     <div class="w-1 h-4 bg-red-600"></div>
                     <p class="text-white/90 text-sm">Relive the beatles era.</p>
@@ -130,9 +136,9 @@
         </div>
 
         <!-- Search Bar -->
-        <div class="flex gap-3">
+        <div class="flex gap-2 sm:gap-3">
             <div class="flex-1 glass-card flex items-center px-4 py-3 rounded-full">
-                <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 mr-2" fill="none" stroke="currentColor"
+                <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 mr-2 shrink-0" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -140,7 +146,8 @@
                 <input type="text" placeholder="Search events..."
                     class="bg-transparent border-none outline-none w-full text-sm font-medium text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500">
             </div>
-            <button class="glass-card w-12 h-12 flex items-center justify-center rounded-full shrink-0">
+            <button
+                class="glass-card w-12 h-12 flex items-center justify-center rounded-full shrink-0 active:bg-gray-200 dark:active:bg-gray-800 transition-colors">
                 <svg class="w-5 h-5 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor"
                     viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -151,9 +158,9 @@
         </div>
 
         <!-- Event Cards Container (Populated by JS to enable endless scrolling) -->
-        <div id="events-container" class="flex flex-col gap-6">
+        <div id="events-container" class="flex flex-col gap-5 sm:gap-6">
             <!-- First Card matches screenshot -->
-            <div class="glass-card rounded-3xl p-6 relative">
+            <div class="glass-card rounded-3xl p-5 sm:p-6 relative">
                 <!-- Barcode overlay top right -->
                 <div class="absolute top-6 right-6 flex flex-col items-end opacity-20 dark:opacity-40">
                     <div class="flex gap-[2px] h-8">
@@ -169,40 +176,46 @@
                 </div>
 
                 <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">Play this game</h3>
-                <div class="flex items-center gap-2 mb-4">
-                    <svg class="w-3 h-3 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+                <!-- Flex wrap for tiny screens so text doesn't overflow -->
+                <div class="flex items-center flex-wrap gap-2 mb-4 pr-10">
+                    <svg class="w-3 h-3 text-red-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
                         <path
                             d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z" />
                     </svg>
                     <a href="#"
-                        class="text-xs font-mono font-bold text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white">https://shawnrun.vercel.app/</a>
+                        class="text-[10px] sm:text-xs font-mono font-bold text-gray-600 dark:text-gray-400 md:hover:text-black dark:md:hover:text-white truncate max-w-[160px] sm:max-w-full">shawnrun.vercel.app/</a>
                     <span
-                        class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-[10px] font-bold text-gray-500 dark:text-gray-400 ml-2 tracking-wider">PARTY</span>
+                        class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-[10px] font-bold text-gray-500 dark:text-gray-400 tracking-wider shrink-0">PARTY</span>
                 </div>
 
-                <p class="text-sm text-gray-600 dark:text-gray-300 mb-8 font-medium">Drunkness</p>
+                <p class="text-sm text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 font-medium">Drunkness</p>
 
                 <!-- Ticket details section -->
                 <div class="relative pt-6">
                     <!-- Dashed line separator -->
-                    <div class="absolute top-0 left-[-24px] right-[-24px] h-[1px] dashed-line"></div>
+                    <!-- Adjusted positioning slightly for varying paddings -->
+                    <div
+                        class="absolute top-0 left-[-20px] sm:left-[-24px] right-[-20px] sm:right-[-24px] h-[1px] dashed-line">
+                    </div>
                     <!-- Cutouts for ticket effect -->
                     <div
-                        class="absolute top-[-10px] left-[-34px] w-5 h-5 bg-gray-200/50 dark:bg-[#1a1a1a]/80 rounded-full inset-shadow">
+                        class="absolute top-[-10px] left-[-30px] sm:left-[-34px] w-5 h-5 bg-gray-200/50 dark:bg-[#1a1a1a]/80 rounded-full inset-shadow">
                     </div>
                     <div
-                        class="absolute top-[-10px] right-[-34px] w-5 h-5 bg-gray-200/50 dark:bg-[#1a1a1a]/80 rounded-full inset-shadow">
+                        class="absolute top-[-10px] right-[-30px] sm:right-[-34px] w-5 h-5 bg-gray-200/50 dark:bg-[#1a1a1a]/80 rounded-full inset-shadow">
                     </div>
 
-                    <div class="flex justify-between items-end mb-6">
-                        <div class="flex gap-6">
+                    <div class="flex justify-between items-end mb-5 sm:mb-6">
+                        <div class="flex gap-4 sm:gap-6">
                             <div>
-                                <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold mb-1 tracking-wider">
+                                <p
+                                    class="text-[9px] sm:text-[10px] text-gray-400 dark:text-gray-500 font-bold mb-1 tracking-wider">
                                     DATE</p>
                                 <p class="font-bold text-sm dark:text-gray-200">Feb 21</p>
                             </div>
                             <div>
-                                <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold mb-1 tracking-wider">
+                                <p
+                                    class="text-[9px] sm:text-[10px] text-gray-400 dark:text-gray-500 font-bold mb-1 tracking-wider">
                                     TIME</p>
                                 <p class="font-bold text-sm dark:text-gray-200">21:55</p>
                             </div>
@@ -210,8 +223,9 @@
                         <p class="text-xl font-bold dark:text-white">₹1</p>
                     </div>
 
-                    <div class="flex justify-between items-center">
-                        <div class="flex flex-col opacity-40 dark:opacity-60">
+                    <div class="flex justify-between items-center gap-2">
+                        <div class="flex flex-col opacity-40 dark:opacity-60 shrink-0 hidden sm:flex">
+                            <!-- Hidden barcode on very small screens to give button space -->
                             <div class="flex gap-[1px] h-6">
                                 <div class="w-[2px] bg-black dark:bg-white h-full"></div>
                                 <div class="w-1 bg-black dark:bg-white h-full"></div>
@@ -225,8 +239,9 @@
                             <span
                                 class="text-[8px] tracking-[0.2em] font-mono mt-1 text-gray-600 dark:text-gray-300">129394</span>
                         </div>
+                        <!-- Responsive padding for button -->
                         <button
-                            class="bg-[#111] dark:bg-white text-white dark:text-black px-6 py-3 rounded-xl text-xs font-bold tracking-widest hover:bg-black dark:hover:bg-gray-200 active:scale-95 transition-all shadow-lg">
+                            class="bg-[#111] dark:bg-white text-white dark:text-black px-4 sm:px-6 py-3 rounded-xl text-xs font-bold tracking-widest md:hover:bg-black dark:md:hover:bg-gray-200 active:scale-95 transition-all shadow-lg w-full sm:w-auto text-center">
                             GET PASS
                         </button>
                     </div>
@@ -238,9 +253,12 @@
     </div>
 
     <!-- Floating Bottom Navigation -->
-    <div class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
-        <div class="glass-card px-6 py-4 rounded-full flex gap-8 items-center shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
-            <button class="text-black dark:text-white transition-transform hover:scale-110">
+    <!-- Added max-width and adjusted padding for tiny phones -->
+    <div class="fixed bottom-6 w-[90%] max-w-[280px] left-1/2 transform -translate-x-1/2 z-50">
+        <div
+            class="glass-card px-6 py-3 sm:py-4 rounded-full flex justify-between items-center shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
+            <!-- p-3 provides a minimum 44px touch target area for mobile accessibility -->
+            <button class="p-3 -m-2 text-black dark:text-white transition-transform active:scale-90 md:hover:scale-110">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
@@ -248,7 +266,7 @@
                 </svg>
             </button>
             <button
-                class="text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-all hover:scale-110">
+                class="p-3 -m-2 text-gray-400 dark:text-gray-500 md:hover:text-black dark:md:hover:text-white transition-all active:scale-90 md:hover:scale-110">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
@@ -256,7 +274,7 @@
                 </svg>
             </button>
             <button
-                class="text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-all hover:scale-110">
+                class="p-3 -m-2 text-gray-400 dark:text-gray-500 md:hover:text-black dark:md:hover:text-white transition-all active:scale-90 md:hover:scale-110">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -275,7 +293,7 @@
         function generateUICards(count) {
             for (let i = 0; i < count; i++) {
                 const el = document.createElement('div');
-                el.className = 'glass-card rounded-3xl p-6 relative mt-6';
+                el.className = 'glass-card rounded-3xl p-5 sm:p-6 relative mt-5 sm:mt-6';
                 const title = sampleTitles[Math.floor(Math.random() * sampleTitles.length)];
                 const tag = sampleTags[Math.floor(Math.random() * sampleTags.length)];
                 const price = Math.floor(Math.random() * 1500) + 200;
@@ -287,32 +305,32 @@
                         </div>
                         <span class="text-[8px] tracking-[0.2em] font-mono mt-1 dark:text-gray-300">0 4 2</span>
                     </div>
-                    <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">${title}</h3>
-                    <div class="flex items-center gap-2 mb-4">
-                        <svg class="w-3 h-3 text-red-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
-                        <a href="#" class="text-xs font-mono font-bold text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white">Location TBD</a>
-                        <span class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-[10px] font-bold text-gray-500 dark:text-gray-400 ml-2 tracking-wider">${tag}</span>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white pr-8">${title}</h3>
+                    <div class="flex items-center flex-wrap gap-2 mb-4 pr-10">
+                        <svg class="w-3 h-3 text-red-500 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+                        <a href="#" class="text-[10px] sm:text-xs font-mono font-bold text-gray-600 dark:text-gray-400 md:hover:text-black dark:md:hover:text-white truncate max-w-[160px] sm:max-w-full">Location TBD</a>
+                        <span class="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-[10px] font-bold text-gray-500 dark:text-gray-400 tracking-wider shrink-0">${tag}</span>
                     </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-8 font-medium">Join the vibe. Scan the pass at entry.</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 font-medium">Join the vibe. Scan the pass at entry.</p>
                     <div class="relative pt-6">
-                        <div class="absolute top-0 left-[-24px] right-[-24px] h-[1px] dashed-line"></div>
-                        <div class="absolute top-[-10px] left-[-34px] w-5 h-5 bg-gray-200/50 dark:bg-[#1a1a1a]/80 rounded-full inset-shadow"></div>
-                        <div class="absolute top-[-10px] right-[-34px] w-5 h-5 bg-gray-200/50 dark:bg-[#1a1a1a]/80 rounded-full inset-shadow"></div>
-                        <div class="flex justify-between items-end mb-6">
-                            <div class="flex gap-6">
-                                <div><p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold mb-1 tracking-wider">DATE</p><p class="font-bold text-sm dark:text-gray-200">Mar 0${Math.floor(Math.random() * 9) + 1}</p></div>
-                                <div><p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold mb-1 tracking-wider">TIME</p><p class="font-bold text-sm dark:text-gray-200">22:00</p></div>
+                        <div class="absolute top-0 left-[-20px] sm:left-[-24px] right-[-20px] sm:right-[-24px] h-[1px] dashed-line"></div>
+                        <div class="absolute top-[-10px] left-[-30px] sm:left-[-34px] w-5 h-5 bg-gray-200/50 dark:bg-[#1a1a1a]/80 rounded-full inset-shadow"></div>
+                        <div class="absolute top-[-10px] right-[-30px] sm:right-[-34px] w-5 h-5 bg-gray-200/50 dark:bg-[#1a1a1a]/80 rounded-full inset-shadow"></div>
+                        <div class="flex justify-between items-end mb-5 sm:mb-6">
+                            <div class="flex gap-4 sm:gap-6">
+                                <div><p class="text-[9px] sm:text-[10px] text-gray-400 dark:text-gray-500 font-bold mb-1 tracking-wider">DATE</p><p class="font-bold text-sm dark:text-gray-200">Mar 0${Math.floor(Math.random() * 9) + 1}</p></div>
+                                <div><p class="text-[9px] sm:text-[10px] text-gray-400 dark:text-gray-500 font-bold mb-1 tracking-wider">TIME</p><p class="font-bold text-sm dark:text-gray-200">22:00</p></div>
                             </div>
                             <p class="text-xl font-bold dark:text-white">₹${price}</p>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <div class="flex flex-col opacity-40 dark:opacity-60">
+                        <div class="flex justify-between items-center gap-2">
+                            <div class="flex flex-col opacity-40 dark:opacity-60 shrink-0 hidden sm:flex">
                                 <div class="flex gap-[1px] h-6">
                                     <div class="w-[2px] bg-black dark:bg-white h-full"></div><div class="w-1 bg-black dark:bg-white h-full"></div><div class="w-[2px] bg-black dark:bg-white h-full"></div><div class="w-[1px] bg-black dark:bg-white h-full"></div><div class="w-2 bg-black dark:bg-white h-full"></div>
                                 </div>
                                 <span class="text-[8px] tracking-[0.2em] font-mono mt-1 text-gray-600 dark:text-gray-300">${Math.floor(100000 + Math.random() * 900000)}</span>
                             </div>
-                            <button class="bg-[#111] dark:bg-white text-white dark:text-black px-6 py-3 rounded-xl text-xs font-bold tracking-widest hover:bg-black dark:hover:bg-gray-200 active:scale-95 transition-all shadow-lg">GET PASS</button>
+                            <button class="bg-[#111] dark:bg-white text-white dark:text-black px-4 sm:px-6 py-3 rounded-xl text-xs font-bold tracking-widest md:hover:bg-black dark:md:hover:bg-gray-200 active:scale-95 transition-all shadow-lg w-full sm:w-auto text-center">GET PASS</button>
                         </div>
                     </div>
                 `;
@@ -333,8 +351,24 @@
         let highestYGenerated = 0;
 
         function resizeCanvas() {
-            cw = canvas.width = window.innerWidth;
-            ch = canvas.height = window.innerHeight;
+            // Cap device pixel ratio to 2 for better performance on mobile high-res screens
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+            // Get actual CSS dimensions
+            const cssWidth = window.innerWidth;
+            const cssHeight = window.innerHeight;
+
+            // Set internal resolution scaled by DPR
+            canvas.width = cssWidth * dpr;
+            canvas.height = cssHeight * dpr;
+
+            // Keep CSS size intact
+            cw = cssWidth;
+            ch = cssHeight;
+
+            // Scale context to match DPR
+            ctx.scale(dpr, dpr);
+
             renderGraffiti();
         }
         window.addEventListener('resize', resizeCanvas);
@@ -345,7 +379,8 @@
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
-                this.size = Math.random() * 120 + 60;
+                // Slightly smaller elements for mobile viewability
+                this.size = (Math.random() * 100 + 50) * (window.innerWidth < 600 ? 0.7 : 1);
                 this.points = [];
                 const numPoints = 5 + Math.floor(Math.random() * 5);
 
@@ -390,10 +425,10 @@
                 if (this.hasDrip) {
                     ctx.fillStyle = getSilColor();
                     ctx.strokeStyle = getSilColor();
-                    ctx.lineWidth = Math.random() * 8 + 4;
+                    ctx.lineWidth = Math.random() * 6 + 3;
 
                     const dripX = this.x + (Math.random() * this.size - this.size / 2);
-                    const dripLength = Math.random() * 60 + 30;
+                    const dripLength = Math.random() * 50 + 20;
                     const dripY = drawY + this.size * 0.4;
 
                     ctx.beginPath();
@@ -414,15 +449,17 @@
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
-                this.radius = Math.random() * 100 + 50;
+                this.radius = (Math.random() * 80 + 40) * (window.innerWidth < 600 ? 0.8 : 1);
                 this.dots = [];
-                for (let i = 0; i < 60; i++) {
+                // Fewer dots on mobile to improve render performance
+                const numDots = window.innerWidth < 600 ? 30 : 50;
+                for (let i = 0; i < numDots; i++) {
                     const angle = Math.random() * Math.PI * 2;
                     const r = Math.random() * this.radius;
                     this.dots.push({
                         dx: Math.cos(angle) * r,
                         dy: Math.sin(angle) * r,
-                        size: Math.random() * 6 + 2,
+                        size: Math.random() * 5 + 2,
                         opacity: Math.random() * 0.8 + 0.2
                     });
                 }
@@ -449,7 +486,7 @@
                 this.y = y;
                 const words = ["GIG", "CITY", "VIBE", "ART", "BASS", "WILD", "ROCK", "a", "G", "Z"];
                 this.text = words[Math.floor(Math.random() * words.length)];
-                this.fontSize = Math.floor(Math.random() * 150) + 80;
+                this.fontSize = (Math.floor(Math.random() * 120) + 60) * (window.innerWidth < 600 ? 0.7 : 1);
                 this.angle = (Math.random() - 0.5) * 0.4;
             }
 
@@ -518,16 +555,23 @@
             renderGraffiti();
         });
 
-        // Scroll listener: Drives both the UI generation and procedural background
+        // Scroll listener with requestAnimationFrame throttling for mobile performance
+        let isTicking = false;
         window.addEventListener('scroll', () => {
-            requestAnimationFrame(renderGraffiti);
+            if (!isTicking) {
+                window.requestAnimationFrame(() => {
+                    renderGraffiti();
 
-            // Endless UI scrolling logic
-            const scrolledToBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500;
-            if (scrolledToBottom && cardCount < 50) { // Limit to 50 cards for demo
-                generateUICards(3);
+                    // Endless UI scrolling logic
+                    const scrolledToBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500;
+                    if (scrolledToBottom && cardCount < 50) { // Limit to 50 cards for demo
+                        generateUICards(3);
+                    }
+                    isTicking = false;
+                });
+                isTicking = true;
             }
-        });
+        }, { passive: true }); // passive flag for better scroll performance
 
         // Trigger first render
         renderGraffiti();
